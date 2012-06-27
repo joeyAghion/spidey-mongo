@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/joeyAghion/spidey-mongo"
   s.summary     = %q{Implements a MongoDB back-end for Spidey, a framework for crawling and scraping web sites.}
   s.description = %q{Implements a MongoDB back-end for Spidey, a framework for crawling and scraping web sites.}
+  s.license     = 'MIT'
 
   s.rubyforge_project = "spidey-mongo"
 

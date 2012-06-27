@@ -1,0 +1,67 @@
+Spidey-Mongo
+============
+
+This gem implements a [MongoDB](http://www.mongodb.org/) back-end for [Spidey](https://github.com/joeyAghion/spidey), a very simple framework for crawling and scraping web sites.
+
+See [Spidey](https://githubcom/joeyAghion/spidey)'s documentation for a basic example spider class.
+
+The default implementation stores the queue of URLs being crawled, any generated results, and errors as attributes on the spider instance (i.e., in memory). By including this gem's `Spidey::Strategies::Mongo` module, spider implementations can store them in a MongoDB database instead.
+
+Usage
+-----
+
+### Install the gem
+
+    gem install spidey-mongo
+
+
+### Example spider class
+
+    class EbaySpider < Spidey::AbstractSpider
+      include Spidey::Strategies::Mongo
+      
+      handle "http://www.ebay.com", :process_home
+      
+      def process_home(page, default_data = {})
+        # ...
+      end
+    end
+
+### Invocation
+
+The spider's constructor accepts new parameters for each of the MongoDB collections to employ: `url_collection`, `result_collection`, and `error_collection`.
+
+    db = Mongo::Connection.new['example']
+    
+    spider = EbaySpider.new(
+      url_collection: db['urls'],
+      result_collection: db['results'],
+      error_collection: db['errors'])
+
+With persistent storage of the URL-crawling queue, it's now possible to stop crawling and resume at a later point. The `crawl` method accepts a new optional `crawl_for` parameter specifying the number of seconds after which to stop.
+
+    spider.crawl crawl_for: 600  # seconds, or more conveniently (w/ActiveSupport): 10.minutes
+
+(The base implementation's `max_urls` parameter is also useful for this purpose.)
+
+### Recording Results
+
+By default, invocations of `record(data)` by the spider simply insert new documents into the result collection. If corresponding results may already exist in the collection and should instead be updated, use the `set_result_key` helper (with a proc or method symbol) to specify how to find the document to update:
+
+    class EbaySpider < Spidey::AbstractSpider
+      include Spidey::Strategies::Mongo
+      set_result_key ->(data) { data[:auction_id] }
+      
+      # ...
+    end
+
+This performs an `upsert` instead of the usual `insert` (i.e., an update if a result document matching the key already exists, or insert otherwise).
+
+Testing
+-------
+
+    bundle exec rspec
+
+Copyright
+---------
+Copyright (c) 2012 Joey Aghion, Art.sy Inc. See [LICENSE.txt](LICENSE.txt) for further details.
