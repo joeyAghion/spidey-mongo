@@ -46,12 +46,15 @@ With persistent storage of the URL-crawling queue, it's now possible to stop cra
 
 ### Recording Results
 
-By default, invocations of `record(data)` by the spider simply insert new documents into the result collection. If corresponding results may already exist in the collection and should instead be updated, use the `set_result_key` helper (with a proc or method symbol) to specify how to find the document to update:
+By default, invocations of `record(data)` by the spider simply insert new documents into the result collection. If corresponding results may already exist in the collection and should instead be updated, define a `result_key` method that returns a key by which to find the corresponding document. The method is called with a hash of the data being recorded:
 
     class EbaySpider < Spidey::AbstractSpider
       include Spidey::Strategies::Mongo
-      set_result_key ->(data) { data[:auction_id] }
       
+      def result_key(data)
+        data[:detail_url]
+      end
+
       # ...
     end
 

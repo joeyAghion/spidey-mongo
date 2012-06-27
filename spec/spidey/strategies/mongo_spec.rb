@@ -3,8 +3,11 @@ require 'spec_helper'
 describe Spidey::Strategies::Mongo do
   class TestSpider < Spidey::AbstractSpider
     include Spidey::Strategies::Mongo
-    set_result_key ->(data) { data[:detail_url] }
     handle "http://www.cnn.com", :process_home
+    
+    def result_key(data)
+      data[:detail_url]
+    end
   end
   
   before(:each) do
@@ -13,6 +16,10 @@ describe Spidey::Strategies::Mongo do
       url_collection: @db['urls'],
       result_collection: @db['results'],
       error_collection: @db['errors'])
+  end
+  
+  after(:each) do
+    %w{ urls results errors }.each{ |col| @db[col].drop }
   end
   
   it "should add initial URLs to collection" do
@@ -31,6 +38,12 @@ describe Spidey::Strategies::Mongo do
     doc = @db['results'].find_one
     doc['detail_url'].should == 'http://www.cnn.com'
     doc['foo'].should == 'bar'
+  end
+  
+  it "should update existing result" do
+    @db['results'].insert key: 'http://foo.bar', detail_url: 'http://foo.bar'
+    @spider.record detail_url: 'http://foo.bar', foo: 'bar'
+    @db['results'].count.should == 1
   end
   
   it "should add error" do

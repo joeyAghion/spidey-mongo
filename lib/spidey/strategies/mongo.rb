@@ -2,24 +2,6 @@ module Spidey::Strategies
   module Mongo
     attr_accessor :url_collection, :result_collection, :error_collection
   
-    module ClassMethods
-      def set_result_key(callback)
-        @result_key = callback
-      end
-    
-      def result_key(spider, data)
-        case @result_key
-        when Symbol then spider.send(@result_key, data)
-        when Proc then @result_key.call(data)
-        else nil
-        end
-      end
-    end
-  
-    def self.included(base)
-      base.extend ClassMethods
-    end
-  
     def initialize(attrs = {})
       self.url_collection = attrs.delete(:url_collection)
       self.result_collection = attrs.delete(:result_collection)
@@ -44,7 +26,7 @@ module Spidey::Strategies
   
     def record(data)
       $stderr.puts "Recording #{data.inspect.truncate(500)}" if verbose
-      if key = self.class.result_key(self, data)
+      if respond_to?(:result_key) && key = result_key(data)
         result_collection.update({'key' => key}, {'$set' => data}, upsert: true)
       else
         result_collection.insert data
