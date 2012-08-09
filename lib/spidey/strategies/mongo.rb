@@ -25,11 +25,12 @@ module Spidey::Strategies
     end
   
     def record(data)
-      $stderr.puts "Recording #{data.inspect.truncate(500)}" if verbose
-      if respond_to?(:result_key) && key = result_key(data)
-        result_collection.update({'key' => key}, {'$set' => data}, upsert: true)
+      doc = data.merge('spider' => self.class.name)
+      $stderr.puts "Recording #{doc.inspect.truncate(500)}" if verbose
+      if respond_to?(:result_key) && key = result_key(doc)
+        result_collection.update({'key' => key}, {'$set' => doc}, upsert: true)
       else
-        result_collection.insert data
+        result_collection.insert doc
       end
     end
   
@@ -43,7 +44,8 @@ module Spidey::Strategies
   
     def add_error(attrs)
       error = attrs.delete(:error)
-      error_collection.insert attrs.merge(created_at: Time.now, error: error.class.name, message: error.message)
+      doc = attrs.merge(created_at: Time.now, error: error.class.name, message: error.message, spider: self.class.name)
+      error_collection.insert doc
       $stderr.puts "Error on #{attrs[:url]}. #{error.class}: #{error.message}" if verbose
     end
   

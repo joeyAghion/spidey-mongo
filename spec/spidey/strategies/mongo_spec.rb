@@ -25,6 +25,7 @@ describe Spidey::Strategies::Mongo do
   it "should add initial URLs to collection" do
     doc = @db['urls'].find_one(url: "http://www.cnn.com")
     doc['handler'].should == :process_home
+    doc['spider'].should == 'TestSpider'
   end
   
   it "should not add duplicate URLs" do
@@ -38,6 +39,7 @@ describe Spidey::Strategies::Mongo do
     doc = @db['results'].find_one
     doc['detail_url'].should == 'http://www.cnn.com'
     doc['foo'].should == 'bar'
+    doc['spider'].should == 'TestSpider'
   end
   
   it "should update existing result" do
@@ -53,6 +55,7 @@ describe Spidey::Strategies::Mongo do
     doc['url'].should == 'http://www.cnn.com'
     doc['handler'].should == :blah
     doc['message'].should == 'WTF'
+    doc['spider'].should == 'TestSpider'
   end
   
 end
