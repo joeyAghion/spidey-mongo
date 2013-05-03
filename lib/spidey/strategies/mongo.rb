@@ -16,7 +16,7 @@ module Spidey::Strategies
     end
   
     def handle(url, handler, default_data = {})
-      $stderr.puts "Queueing #{url.inspect.truncate(500)}" if verbose
+      Spidey.logger.info "Queueing #{url.inspect[0..200]}..."
       url_collection.update(
         {'spider' => self.class.name, 'url' => url},
         {'$set' => {'handler' => handler, 'default_data' => default_data}},
@@ -26,7 +26,7 @@ module Spidey::Strategies
   
     def record(data)
       doc = data.merge('spider' => self.class.name)
-      $stderr.puts "Recording #{doc.inspect.truncate(500)}" if verbose
+      Spidey.logger.info "Recording #{doc.inspect[0..500]}..."
       if respond_to?(:result_key) && key = result_key(doc)
         result_collection.update({'key' => key}, {'$set' => doc}, upsert: true)
       else
@@ -46,7 +46,7 @@ module Spidey::Strategies
       error = attrs.delete(:error)
       doc = attrs.merge(created_at: Time.now, error: error.class.name, message: error.message, spider: self.class.name)
       error_collection.insert doc
-      $stderr.puts "Error on #{attrs[:url]}. #{error.class}: #{error.message}" if verbose
+      Spidey.logger.error "Error on #{attrs[:url]}. #{error.class}: #{error.message}"
     end
   
   private

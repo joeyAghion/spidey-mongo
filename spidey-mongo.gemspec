@@ -21,9 +21,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec"
-  s.add_development_dependency "ruby-debug19"
   
-  s.add_runtime_dependency "spidey"
+  s.add_runtime_dependency "spidey", ">= 0.1.0"
   s.add_runtime_dependency "mongo"
   s.add_runtime_dependency "bson_ext"
 end
