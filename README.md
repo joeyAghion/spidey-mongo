@@ -75,6 +75,15 @@ Testing
 
     bundle exec rspec
 
+Contributors
+------------
+
+[Joey Aghion](https://github.com/joeyAghion), [Frank Macreery](https://github.com/fancyremarker)
+
+To Do
+-----
+* Extract behaviors shared by `Mongo` and `Moped` strategies.
+
 Copyright
 ---------
-Copyright (c) 2012 Joey Aghion, Art.sy Inc. See [LICENSE.txt](LICENSE.txt) for further details.
+Copyright (c) 2012, 2013 Joey Aghion, Artsy Inc. See [LICENSE.txt](LICENSE.txt) for further details.
