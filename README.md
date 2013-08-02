@@ -5,7 +5,7 @@ This gem implements a [MongoDB](http://www.mongodb.org/) back-end for [Spidey](h
 
 See [Spidey](https://githubcom/joeyAghion/spidey)'s documentation for a basic example spider class.
 
-The default implementation stores the queue of URLs being crawled, any generated results, and errors as attributes on the spider instance (i.e., in memory). By including this gem's `Spidey::Strategies::Mongo` module, spider implementations can store them in a MongoDB database instead.
+The default implementation stores the queue of URLs being crawled, any generated results, and errors as attributes on the spider instance (i.e., in memory). By including this gem's module, spider implementations can store them in a MongoDB database instead.
 
 Usage
 -----
@@ -13,6 +13,16 @@ Usage
 ### Install the gem
 
     gem install spidey-mongo
+
+
+### `mongo` versus `moped`
+
+Spidey-Mongo provides two strategies:
+
+* `Spidey::Strategies::Mongo`: Compatible with 10gen's [`mongo`](https://github.com/mongodb/mongo-ruby-driver) gem
+* `Spidey::Strategies::Moped`: Compatible with the [`moped`](https://github.com/mongoid/moped) gem, e.g., for use with Mongoid 3.x
+
+You can include either strategy in your classes, as appropriate. All the examples in this README assume `Spidey::Strategies::Mongo`.
 
 
 ### Example spider class
