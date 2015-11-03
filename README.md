@@ -1,6 +1,8 @@
 Spidey-Mongo
 ============
 
+[![Build Status](https://travis-ci.org/joeyAghion/spidey-mongo.svg?branch=master)](https://travis-ci.org/joeyAghion/spidey-mongo)
+
 This gem implements a [MongoDB](http://www.mongodb.org/) back-end for [Spidey](https://github.com/joeyAghion/spidey), a very simple framework for crawling and scraping web sites.
 
 See [Spidey](https://githubcom/joeyAghion/spidey)'s documentation for a basic example spider class.
@@ -19,19 +21,18 @@ Usage
 
 Spidey-Mongo provides two strategies:
 
-* `Spidey::Strategies::Mongo`: Compatible with 10gen's [`mongo`](https://github.com/mongodb/mongo-ruby-driver) gem
-* `Spidey::Strategies::Moped`: Compatible with the [`moped`](https://github.com/mongoid/moped) gem, e.g., for use with Mongoid 3.x
+* `Spidey::Strategies::Mongo`: Compatible with Mongo Ruby Driver, [`mongo`](https://github.com/mongodb/mongo-ruby-driver), 1.x
+* `Spidey::Strategies::Moped`: Compatible with the [`moped`](https://github.com/mongoid/moped) 2.x, e.g., for use with Mongoid 3.x
 
 You can include either strategy in your classes, as appropriate. All the examples in this README assume `Spidey::Strategies::Mongo`.
-
 
 ### Example spider class
 
     class EbaySpider < Spidey::AbstractSpider
       include Spidey::Strategies::Mongo
-      
+
       handle "http://www.ebay.com", :process_home
-      
+
       def process_home(page, default_data = {})
         # ...
       end
@@ -42,7 +43,7 @@ You can include either strategy in your classes, as appropriate. All the example
 The spider's constructor accepts new parameters for each of the MongoDB collections to employ: `url_collection`, `result_collection`, and `error_collection`.
 
     db = Mongo::Connection.new['example']
-    
+
     spider = EbaySpider.new(
       url_collection: db['urls'],
       result_collection: db['results'],
@@ -60,7 +61,7 @@ By default, invocations of `record(data)` by the spider simply insert new docume
 
     class EbaySpider < Spidey::AbstractSpider
       include Spidey::Strategies::Mongo
-      
+
       def result_key(data)
         data[:detail_url]
       end
