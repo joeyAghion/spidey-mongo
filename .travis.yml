@@ -4,6 +4,7 @@ services:
 env:
   - MONGO_VERSION=moped
   - MONGO_VERSION=mongo
+  - MONGO_VERSION=mongo2
 
 rvm:
   - 2.2
