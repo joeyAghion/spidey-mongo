@@ -1,7 +1,10 @@
 ### Next
 
+* Your contribution here...
+
+### 0.3.0
+
 * [#3](https://github.com/joeyAghion/spidey-mongo/pull/3): Added support for Mongo Ruby Driver 2.x - [@dblock](https://github.com/dblock).
-* Your contribution here.
 
 ### 0.2.0
 
