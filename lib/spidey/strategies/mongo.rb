@@ -18,8 +18,8 @@ module Spidey::Strategies
     def handle(url, handler, default_data = {})
       Spidey.logger.info "Queueing #{url.inspect[0..200]}..."
       url_collection.update(
-        {'spider' => self.class.name, 'url' => url},
-        {'$set' => {'handler' => handler, 'default_data' => default_data}},
+        { 'spider' => self.class.name, 'url' => url },
+        { '$set' => { 'handler' => handler, 'default_data' => default_data } },
         upsert: true
       )
     end
@@ -28,16 +28,16 @@ module Spidey::Strategies
       doc = data.merge('spider' => self.class.name)
       Spidey.logger.info "Recording #{doc.inspect[0..500]}..."
       if respond_to?(:result_key) && key = result_key(doc)
-        result_collection.update({'key' => key}, {'$set' => doc}, upsert: true)
+        result_collection.update({ 'key' => key }, { '$set' => doc }, upsert: true)
       else
         result_collection.insert doc
       end
     end
 
-    def each_url(&block)
+    def each_url(&_block)
       while url = get_next_url
-        break if url['last_crawled_at'] && url['last_crawled_at'] >= @crawl_started_at  # crawled already in this batch
-        url_collection.update({'_id' => url['_id']}, '$set' => {last_crawled_at: Time.now})
+        break if url['last_crawled_at'] && url['last_crawled_at'] >= @crawl_started_at # crawled already in this batch
+        url_collection.update({ '_id' => url['_id'] }, '$set' => { last_crawled_at: Time.now })
         yield url['url'], url['handler'], url['default_data'].symbolize_keys
       end
     end
@@ -49,14 +49,11 @@ module Spidey::Strategies
       Spidey.logger.error "Error on #{attrs[:url]}. #{error.class}: #{error.message}"
     end
 
-  private
+    private
 
     def get_next_url
-      return nil if (@until && Time.now >= @until)  # exceeded time bound
-      url_collection.find_one({spider: self.class.name}, {
-        sort: [[:last_crawled_at, ::Mongo::ASCENDING], [:_id, ::Mongo::ASCENDING]]
-      })
+      return nil if @until && Time.now >= @until # exceeded time bound
+      url_collection.find_one({ spider: self.class.name }, sort: [[:last_crawled_at, ::Mongo::ASCENDING], [:_id, ::Mongo::ASCENDING]])
     end
-
   end
 end
