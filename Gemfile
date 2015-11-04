@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source 'http://rubygems.org'
 
 case version = ENV['MONGO_VERSION'] || 'mongo2'
 when /^moped/
