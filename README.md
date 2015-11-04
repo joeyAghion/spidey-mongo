@@ -19,10 +19,11 @@ Usage
 
 ### `mongo` versus `moped`
 
-Spidey-Mongo provides two strategies:
+Spidey-Mongo provides three strategies:
 
-* `Spidey::Strategies::Mongo`: Compatible with Mongo Ruby Driver, [`mongo`](https://github.com/mongodb/mongo-ruby-driver), 1.x
-* `Spidey::Strategies::Moped`: Compatible with the [`moped`](https://github.com/mongoid/moped) 2.x, e.g., for use with Mongoid 3.x
+* `Spidey::Strategies::Mongo`: Compatible with Mongo Ruby Driver 1.x, [`mongo`](https://github.com/mongodb/mongo-ruby-driver)
+* `Spidey::Strategies::Mongo2`: Compatible with Mongo Ruby Driver 2.x, [`mongo`](https://github.com/mongodb/mongo-ruby-driver), e.g., for use with Mongoid 5.x
+* `Spidey::Strategies::Moped`: Compatible with the [`moped`](https://github.com/mongoid/moped) 2.x, e.g., for use with Mongoid 3.x and 4.x
 
 You can include either strategy in your classes, as appropriate. All the examples in this README assume `Spidey::Strategies::Mongo`.
 
